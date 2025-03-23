@@ -12,6 +12,7 @@ import {
   Legend,
 } from 'chart.js';
 import SearchBar from '../components/SearchBar';
+import type { ChartOptions } from 'chart.js';
 
 //  注册 chart.js 所需模块
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Title, Tooltip, Legend);
@@ -41,20 +42,20 @@ export default function Home() {
 
   const timestamps = weatherData.map((item) => item.timestamp);
 
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { position: 'top' },
-      title: { display: false },
-    },
-    scales: {
-      y: {
-        beginAtZero: false,
-        ticks: { stepSize: 5 },
-      },
-    },
-  };
+  const chartOptions: ChartOptions<'line'> = {
+	  responsive: true,
+	  maintainAspectRatio: false,
+	  plugins: {
+	    legend: { position: 'top' },
+	    title: { display: false },
+	  },
+	  scales: {
+	    y: {
+	      beginAtZero: false,
+	      ticks: { stepSize: 5 },
+	    },
+	  },
+	};
 
   const temperatureChart = {
     labels: timestamps,
