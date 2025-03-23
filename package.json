@@ -30,6 +30,5 @@
 }
 
 "scripts": {
-  "build": "next build",
-  "export": "next export"
+  "build": "next build && next export",
 }
