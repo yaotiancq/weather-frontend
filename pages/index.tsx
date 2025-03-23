@@ -13,12 +13,21 @@ import {
 } from 'chart.js';
 import SearchBar from '../components/SearchBar';
 
+//  注册 chart.js 所需模块
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Title, Tooltip, Legend);
+
+// 声明天气数据类型
+type WeatherItem = {
+  timestamp: string;
+  temperature: number;
+  humidity: number;
+  pressure: number;
+};
 
 export default function Home() {
   const [city, setCity] = useState('San Francisco');
   const [days, setDays] = useState(3);
-  const [weatherData, setWeatherData] = useState([]);
+  const [weatherData, setWeatherData] = useState<WeatherItem[]>([]); // 添加类型
 
   const fetchWeatherData = async () => {
     const API_URL = `https://m0mwqniisa.execute-api.us-east-1.amazonaws.com/dev/weather/${city}?days=${days}`;
@@ -26,7 +35,7 @@ export default function Home() {
       const res = await axios.get(API_URL);
       setWeatherData(res.data);
     } catch (error) {
-      console.error("❌ 获取天气数据失败: ", error);
+      console.error("获取天气数据失败: ", error);
     }
   };
 
@@ -42,7 +51,7 @@ export default function Home() {
     scales: {
       y: {
         beginAtZero: false,
-        ticks: { stepSize: 5 }, // 可选：控制纵轴刻度
+        ticks: { stepSize: 5 },
       },
     },
   };
