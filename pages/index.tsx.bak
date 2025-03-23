@@ -1,0 +1,60 @@
+import { useState } from 'react';
+import axios from 'axios';
+import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import SearchBar from '../components/SearchBar';
+import WeatherInfo from '../components/WeatherInfo';
+
+ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Title, Tooltip, Legend);
+
+export default function Home() {
+  const [city, setCity] = useState('San Francisco');
+  const [days, setDays] = useState(3);
+  const [weatherData, setWeatherData] = useState([]);
+
+  const fetchWeatherData = async () => {
+    const API_URL = `https://m0mwqniisa.execute-api.us-east-1.amazonaws.com/dev/weather/${city}?days=${days}`;
+    try {
+      const res = await axios.get(API_URL);
+      setWeatherData(res.data);
+    } catch (error) {
+      console.error("❌ 获取天气数据失败: ", error);
+    }
+  };
+
+  const chartData = {
+    labels: weatherData.map((item) => item.timestamp),
+    datasets: [
+      {
+        label: 'Temperature (°C)',
+        data: weatherData.map((item) => item.temperature),
+        borderColor: 'blue',
+        backgroundColor: 'rgba(0, 0, 255, 0.2)',
+        tension: 0.4,
+      },
+    ],
+  };
+
+  return (
+    <div className="p-8">
+      <h1 className="text-3xl font-bold text-center mb-4">Weather App 🌤</h1>
+      <SearchBar city={city} setCity={setCity} days={days} setDays={setDays} fetchData={fetchWeatherData} />
+      <WeatherInfo weatherData={weatherData} />
+      {weatherData.length > 0 && (
+        <div className="mt-6">
+          <Line data={chartData} />
+        </div>
+      )}
+    </div>
+  );
+}
+
